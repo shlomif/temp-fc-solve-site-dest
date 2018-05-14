@@ -1,9 +1,15 @@
 "use strict";
 
+var foo;
+console.log = function(x){alert(x);};
+console.log("appl");
+console.log("nappl");
+try {
+    foo =
 // define(["fcs-base-ui", "web-fc-solve", "libfcs-wrap", 'dist/fc_solve_find_index_s2ints'], function (base_ui, w, Module, s2i) {
-define(["fcs-base-ui", "web-fc-solve"], function (base_ui, w/*, Module, s2i*/) {
-    // var _my_module = Module()({});
-    // w.FC_Solve_init_wrappers_with_module(_my_module);
+define(["fcs-base-ui", "web-fc-solve", "libfcs-wrap", ], function (base_ui, w, Module) {
+    var _my_module = Module()({});
+    w.FC_Solve_init_wrappers_with_module(_my_module);
 
     function toggle_advanced() {
         var ctl = $("#fcs_advanced");
@@ -40,7 +46,7 @@ define(["fcs-base-ui", "web-fc-solve"], function (base_ui, w/*, Module, s2i*/) {
 
     function find_deal_ui() {
         var deal_str = $("#stdin").val().replace(/#[^\r\n]*\r?\n?/g, '').replace(/\r+\n/, "\n").replace(/([^\n])$/, "$1\n");
-        var ints = [0]; // s2i.find_index__board_string_to_ints(deal_str);
+        var ints = []; // s2i.find_index__board_string_to_ints(deal_str);
         var ints_s = ints.map(function (i) {
             var ret = i.toString();
             return " ".repeat(10 - ret.length) + ret;
@@ -70,7 +76,10 @@ define(["fcs-base-ui", "web-fc-solve"], function (base_ui, w/*, Module, s2i*/) {
     }
 
     function set_up_handlers() {
-        $("#populate_input").click(base_ui.populate_input_with_numbered_deal);
+        $("#populate_input").click(function () {
+            alert("twil");
+            base_ui.populate_input_with_numbered_deal();
+        });
         $("#run_do_solve").click(find_deal_ui);
     }
 
@@ -86,3 +95,7 @@ define(["fcs-base-ui", "web-fc-solve"], function (base_ui, w/*, Module, s2i*/) {
         set_up_handlers: set_up_handlers
     };
 });
+} catch (e) {
+    alert(e);
+}
+foo

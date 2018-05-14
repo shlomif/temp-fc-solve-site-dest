@@ -222,6 +222,7 @@ $(function() { $('.enable_js').addClass('ok'); })
 requirejs.config({
     baseUrl: '../../js',
     });
+console.log = function(x){alert(x);};
     require(["../../js/find-fc-deal-ui.js"], function (web_fc_solve_ui) {
     $(function() {
         $( "#fc_solve_tabs" ).tabs({
