@@ -1,1 +1,704 @@
-"use strict";var _createClass=function(){function defineProperties(target,props){for(var i=0;i<props.length;i++){var descriptor=props[i];descriptor.enumerable=descriptor.enumerable||!1,descriptor.configurable=!0,"value"in descriptor&&(descriptor.writable=!0),Object.defineProperty(target,descriptor.key,descriptor)}}return function(Constructor,protoProps,staticProps){return protoProps&&defineProperties(Constructor.prototype,protoProps),staticProps&&defineProperties(Constructor,staticProps),Constructor}}();function _classCallCheck(instance,Constructor){if(!(instance instanceof Constructor))throw new TypeError("Cannot call a class as a function")}function mydef(x,y){return"function"!=typeof define?require("amdefine")(module)(x,y):define(x,y)}mydef(["web-fc-solve--expand-moves","big-integer"],function(expand,bigInt){var fc_solve_expand_move=expand.fc_solve_expand_move,fc_solve__hll_ms_rand__get_singleton=null,fc_solve__hll_ms_rand__init=null,fc_solve__hll_ms_rand__mod_rand=null,fc_solve_user__find_deal__alloc=null,fc_solve_user__find_deal__fill=null,fc_solve_user__find_deal__free=null,fc_solve_user__find_deal__run=null,freecell_solver_user_alloc=null,freecell_solver_user_solve_board=null,freecell_solver_user_resume_solution=null,freecell_solver_user_cmd_line_read_cmd_line_preset=null,malloc=null,c_free=null,freecell_solver_user_get_next_move=null,freecell_solver_user_get_num_freecells=null,freecell_solver_user_get_num_stacks=null,freecell_solver_user_current_state_stringify=null,freecell_solver_user_stringify_move_ptr=null,freecell_solver_user_free=null,freecell_solver_user_limit_iterations_long=null,freecell_solver_user_get_invalid_state_error_into_string=null,freecell_solver_user_cmd_line_parse_args_with_file_nesting_count=null,fc_solve_Pointer_stringify=null,fc_solve_FS_writeFile=null,fc_solve_getValue=null,fc_solve_setValue=null,fc_solve_intArrayFromString=null,fc_solve_allocate_i8=null;function alloc_wrap(size,desc,error){var ret=malloc(size);if(0==ret)throw alert("Could not allocate "+desc+" (out of memory?)"),error;return ret}var remove_trailing_space_re=/[ \t]+$/gm,fc_solve_2uni_suit_map={H:"♥",C:"♣",D:"♦",S:"♠"};function fc_solve_2uni_card(match,p1,p2,offset,mystring){return p1+fc_solve_2uni_suit_map[p2]}function fc_solve_2uni_found(match,p1,p2,offset,mystring){return fc_solve_2uni_suit_map[p1]+p2}var FC_Solve=function(){function FC_Solve(args){_classCallCheck(this,FC_Solve);var that=this;that.dir_base=args.dir_base,that.string_params=args.string_params,that.set_status_callback=args.set_status_callback,that.is_unicode_cards=args.is_unicode_cards||!1,that.cmd_line_preset=args.cmd_line_preset,that.current_iters_limit=0,that.obj=function(){var ret_obj=freecell_solver_user_alloc();if(0==ret_obj)throw alert("Could not allocate solver instance (out of memory?)"),"Foo";if(0!=that._initialize_obj(ret_obj))throw alert("Failed to initialize solver (Bug!)"),freecell_solver_user_free(ret_obj),"Bar";return ret_obj}(),that._proto_states_and_moves_seq=null,that._pre_expand_states_and_moves_seq=null,that._post_expand_states_and_moves_seq=null,that._state_string_buffer=alloc_wrap(500,"state string buffer","Zam"),that._move_string_buffer=alloc_wrap(200,"move string buffer","Plum")}return _createClass(FC_Solve,[{key:"set_status",value:function(myclass,mylabel){return this.set_status_callback(myclass,mylabel)}},{key:"handle_err_code",value:function(solve_err_code){if(8==solve_err_code){var error_string_ptr=alloc_wrap(300,"state error string","Gum");freecell_solver_user_get_invalid_state_error_into_string(this.obj,error_string_ptr,1);var error_string=fc_solve_Pointer_stringify(error_string_ptr);throw c_free(error_string_ptr),alert(error_string+"\n"),"Foo"}if(5==solve_err_code)return this.current_iters_limit>=131072?void this.set_status("exceeded","Iterations count exceeded at "+this.current_iters_limit):void this.set_status("running","Running ("+this.current_iters_limit+" iterations)");if(0!=solve_err_code){if(1!=solve_err_code)throw alert("Unknown Error code "+solve_err_code+"!"),"Foo";this.set_status("impossible","Could not solve.")}else this.set_status("solved","Solved")}},{key:"_increase_iters_limit",value:function(){this.current_iters_limit+=1e3,freecell_solver_user_limit_iterations_long(this.obj,this.current_iters_limit)}},{key:"resume_solution",value:function(){this._increase_iters_limit();var solve_err_code=freecell_solver_user_resume_solution(this.obj);return this.handle_err_code(solve_err_code),solve_err_code}},{key:"_process_board_string",value:function(proto_board_string){return proto_board_string.match(/\n$/)?proto_board_string+"":proto_board_string+"\n"}},{key:"_stringify_possibly_null_ptr",value:function(s_ptr){return s_ptr?fc_solve_Pointer_stringify(s_ptr):""}},{key:"_initialize_obj",value:function(obj){var cmd_line_preset=this.cmd_line_preset;try{if("default"!=cmd_line_preset){var error_string_ptr_buf=alloc_wrap(128,"error string buffer","Foo"),preset_ret=freecell_solver_user_cmd_line_read_cmd_line_preset(obj,cmd_line_preset,0,error_string_ptr_buf,0,null),error_string_ptr=fc_solve_getValue(error_string_ptr_buf,"*"),error_string=this._stringify_possibly_null_ptr(error_string_ptr);if(c_free(error_string_ptr),c_free(error_string_ptr_buf),0!=preset_ret)throw alert("Failed to load command line preset '"+cmd_line_preset+"'. Problem is: «"+error_string+"». Should not happen."),"Foo"}if(this.string_params){var _error_string_ptr_buf=alloc_wrap(128,"error string buffer","Engo");fc_solve_FS_writeFile("/string-params.fc-solve.txt",this.string_params,{});var args_buf=alloc_wrap(8,"args buf","Seed"),read_from_file_str_ptr=fc_solve_allocate_i8(fc_solve_intArrayFromString("--read-from-file")),arg_str_ptr=fc_solve_allocate_i8(fc_solve_intArrayFromString("0,/string-params.fc-solve.txt"));fc_solve_setValue(args_buf,read_from_file_str_ptr,"*"),fc_solve_setValue(args_buf+4,arg_str_ptr,"*");var last_arg_ptr=alloc_wrap(4,"last_arg_ptr","cherry"),args_ret_code=freecell_solver_user_cmd_line_parse_args_with_file_nesting_count(obj,2,args_buf,0,0,0,0,_error_string_ptr_buf,last_arg_ptr,-1,0);c_free(last_arg_ptr),c_free(args_buf);var _error_string_ptr=fc_solve_getValue(_error_string_ptr_buf,"*"),_error_string=this._stringify_possibly_null_ptr(_error_string_ptr);if(c_free(_error_string_ptr),c_free(_error_string_ptr_buf),0!=args_ret_code)throw alert("Failed to process user-specified command line arguments. Problem is: «"+_error_string+"»."),"Foo"}return 0}catch(e){return this.set_status("error","Error"),-1}}},{key:"do_solve",value:function(proto_board_string){this.set_status("running","Running");try{this._increase_iters_limit();var board_string=this._process_board_string(proto_board_string),solve_err_code=freecell_solver_user_solve_board(this.obj,board_string);return this.handle_err_code(solve_err_code),solve_err_code}catch(e){return void this.set_status("error","Error")}}},{key:"_replace_card",value:function(s){return s.replace(/\b([A2-9TJQK])([HCDS])\b/g,fc_solve_2uni_card)}},{key:"_replace_found",value:function(s){return s.replace(/\b([HCDS])(-[0A2-9TJQK])\b/g,fc_solve_2uni_found)}},{key:"unicode_preprocess",value:function(out_buffer){return this.is_unicode_cards?this._replace_found(this._replace_card(out_buffer)):out_buffer}},{key:"_calc_states_and_moves_seq",value:function(){var that=this;if(!that._pre_expand_states_and_moves_seq){var states_and_moves_sequence=[];_out_state(get_state_str());for(var move_buffer=alloc_wrap(128,"a buffer for the move","maven");0==freecell_solver_user_get_next_move(that.obj,move_buffer);){var state_as_string=get_state_str();freecell_solver_user_stringify_move_ptr(that.obj,that._move_string_buffer,move_buffer,0);var move_as_string=fc_solve_Pointer_stringify(that._move_string_buffer);states_and_moves_sequence.push({type:"m",m:{type:"m",str:move_as_string},exp:null,is_exp:!1}),_out_state(state_as_string)}that._proto_states_and_moves_seq=states_and_moves_sequence,that._pre_expand_states_and_moves_seq=states_and_moves_sequence.map(function(item){return"m"==item.type?item.m:item}),that._post_expand_states_and_moves_seq=null,c_free(move_buffer),freecell_solver_user_free(that.obj),that.obj=0,c_free(that._state_string_buffer),that._state_string_buffer=0,c_free(that._move_string_buffer),that._move_string_buffer=0}function _out_state(s){states_and_moves_sequence.push({type:"s",str:s})}function get_state_str(){return freecell_solver_user_current_state_stringify(that.obj,that._state_string_buffer,1,0,1),fc_solve_Pointer_stringify(that._state_string_buffer)}}},{key:"_calc_expanded_move",value:function(idx){var states_and_moves_sequence=this._proto_states_and_moves_seq;return states_and_moves_sequence[idx].exp||(states_and_moves_sequence[idx].exp=fc_solve_expand_move(8,4,states_and_moves_sequence[idx-1].str,states_and_moves_sequence[idx].m,states_and_moves_sequence[idx+1].str)),states_and_moves_sequence[idx].exp}},{key:"_calc_expanded_seq",value:function(){if(!this._post_expand_states_and_moves_seq){this._calc_states_and_moves_seq();for(var states_and_moves_sequence=this._proto_states_and_moves_seq,new_array=[states_and_moves_sequence[0]],i=1;i<states_and_moves_sequence.length-1;i+=2)Array.prototype.push.apply(new_array,this._calc_expanded_move(i)),new_array.push(states_and_moves_sequence[i+1]);this._post_expand_states_and_moves_seq=new_array}}},{key:"_display_specific_sol",value:function(seq){var out_buffer="";function my_append(str){out_buffer+=str}return my_append("-=-=-=-=-=-=-=-=-=-=-=-\n\n"),seq.forEach(function(x){var t_=x.type;my_append(x.str+("s"==t_?"\n\n====================\n\n":"\n\n"))}),this.unicode_preprocess(out_buffer.replace(remove_trailing_space_re,""))}},{key:"display_solution",value:function(args){var ret=void 0;try{this._calc_states_and_moves_seq(),this.set_status("solved","Solved"),ret=this._display_specific_sol(this._pre_expand_states_and_moves_seq)}catch(e){return}return ret}},{key:"display_expanded_moves_solution",value:function(args){return this._calc_expanded_seq(),this.set_status("solved","Solved"),this._display_specific_sol(this._post_expand_states_and_moves_seq)}},{key:"generic_display_sol",value:function(args){return args.expand?this.display_expanded_moves_solution(args):this.display_solution(args)}},{key:"get_num_freecells",value:function(){return freecell_solver_user_get_num_freecells(this.obj)}},{key:"get_num_stacks",value:function(){return freecell_solver_user_get_num_stacks(this.obj)}}]),FC_Solve}(),MSRand=function(){function MSRand(args){_classCallCheck(this,MSRand);this.gamenumber=args.gamenumber,this.rander=fc_solve__hll_ms_rand__get_singleton(),fc_solve__hll_ms_rand__init(this.rander,""+this.gamenumber)}return _createClass(MSRand,[{key:"max_rand",value:function(mymax){return fc_solve__hll_ms_rand__mod_rand(this.rander,mymax)}},{key:"shuffle",value:function(deck){if(deck.length)for(var i=deck.length;--i;){var j=this.max_rand(i+1),tmp=deck[i];deck[i]=deck[j],deck[j]=tmp}return deck}}]),MSRand}();return{FC_Solve:FC_Solve,FC_Solve_init_wrappers_with_module:function(Module){fc_solve__hll_ms_rand__get_singleton=Module.cwrap("fc_solve__hll_ms_rand__get_singleton","number",[]),fc_solve__hll_ms_rand__init=Module.cwrap("fc_solve__hll_ms_rand__init","number",["number","string"]),fc_solve__hll_ms_rand__mod_rand=Module.cwrap("fc_solve__hll_ms_rand__mod_rand","number",["number","number"]),fc_solve_user__find_deal__alloc=Module.cwrap("fc_solve_user__find_deal__alloc","number",[]),fc_solve_user__find_deal__fill=Module.cwrap("fc_solve_user__find_deal__fill","number",["number","string"]),fc_solve_user__find_deal__free=Module.cwrap("fc_solve_user__find_deal__free","number",["number"]),fc_solve_user__find_deal__run=Module.cwrap("fc_solve_user__find_deal__run","string",["number","string","string"]),freecell_solver_user_alloc=Module.cwrap("freecell_solver_user_alloc","number",[]),freecell_solver_user_solve_board=Module.cwrap("freecell_solver_user_solve_board","number",["number","string"]),freecell_solver_user_resume_solution=Module.cwrap("freecell_solver_user_resume_solution","number",["number"]),freecell_solver_user_cmd_line_read_cmd_line_preset=Module.cwrap("freecell_solver_user_cmd_line_read_cmd_line_preset","number",["number","string","number","number","number","string"]),malloc=Module.cwrap("malloc","number",["number"]),c_free=Module.cwrap("free","number",["number"]),freecell_solver_user_get_next_move=Module.cwrap("freecell_solver_user_get_next_move","number",["number","number"]),freecell_solver_user_get_num_freecells=Module.cwrap("freecell_solver_user_get_num_freecells","number",["number"]),freecell_solver_user_get_num_stacks=Module.cwrap("freecell_solver_user_get_num_stacks","number",["number"]),freecell_solver_user_current_state_stringify=Module.cwrap("freecell_solver_user_current_state_stringify","number",["number","number","number","number","number"]),freecell_solver_user_stringify_move_ptr=Module.cwrap("freecell_solver_user_stringify_move_ptr","number",["number","number","number","number"]),freecell_solver_user_free=Module.cwrap("freecell_solver_user_free","number",["number"]),freecell_solver_user_limit_iterations_long=Module.cwrap("freecell_solver_user_limit_iterations_long","number",["number","number"]),freecell_solver_user_get_invalid_state_error_into_string=Module.cwrap("freecell_solver_user_get_invalid_state_error_into_string","number",["number","number","number"]),freecell_solver_user_cmd_line_parse_args_with_file_nesting_count=Module.cwrap("freecell_solver_user_cmd_line_parse_args_with_file_nesting_count","number",["number","number","number","number","number","number","number","number","number","number","number"]),fc_solve_Pointer_stringify=function(ptr){return Module.Pointer_stringify(ptr)},fc_solve_FS_writeFile=function(p1,p2,p3){return Module.FS.writeFile(p1,p2,p3)},fc_solve_getValue=function(p1,p2){return Module.getValue(p1,p2)},fc_solve_setValue=function(p1,p2,p3){return Module.setValue(p1,p2,p3)},fc_solve_intArrayFromString=function(s){return Module.intArrayFromString(s)},fc_solve_allocate_i8=function(p1){return Module.allocate(p1,"i8",Module.ALLOC_STACK)}},FCS_STATE_SUSPEND_PROCESS:5,FCS_STATE_WAS_SOLVED:0,Freecell_Deal_Finder:function(){function Freecell_Deal_Finder(args){_classCallCheck(this,Freecell_Deal_Finder);this.obj=fc_solve_user__find_deal__alloc()}return _createClass(Freecell_Deal_Finder,[{key:"fill",value:function(str){fc_solve_user__find_deal__fill(this.obj,str)}},{key:"release",value:function(){fc_solve_user__find_deal__free(this.obj)}},{key:"run",value:function(abs_start,abs_end_param,update_cb){var CHUNK=bigInt(1e6);this.CHUNKM=CHUNK.add(bigInt.minusOne);var start=bigInt(abs_start),abs_end=bigInt(abs_end_param);this.abs_end=abs_end,this.start=start,this.update_cb=update_cb}},{key:"cont",value:function(){var abs_end=this.abs_end;if(this.start.lesser(abs_end)){this.update_cb({start:this.start});var end=this.start.add(this.CHUNKM);end.gt(abs_end)&&(end=abs_end);var result=fc_solve_user__find_deal__run(this.obj,this.start.toString(),end.toString());return"-1"!=result?{found:!0,result:result}:(this.start=end.add(bigInt.one),{found:!1,cont:!0})}return{found:!1,cont:!1}}}]),Freecell_Deal_Finder}(),deal_ms_fc_board:function(seed){var randomizer=new MSRand({gamenumber:seed});function _perl_range(start,end){for(var ret=[],i=start;i<=end;i++)ret.push(i);return ret}var columns=_perl_range(0,7).map(function(){return[]}),deck=_perl_range(0,51);randomizer.shuffle(deck),deck=deck.reverse();for(var i=0;i<52;i++)columns[i%8].push(deck[i]);function render_card(card){var suit=card%4,rank=Math.floor(card/4);return"A23456789TJQK".charAt(rank)+"CDHS".charAt(suit)}return columns.map(function(col){return": "+col.map(render_card).join(" ")+"\n"}).join("")}}});
+"use strict";
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function mydef(x, y) {
+    if (typeof define !== 'function') {
+        return require('amdefine')(module)(x, y);
+    } else {
+        return define(x, y);
+    }
+}
+mydef(["web-fc-solve--expand-moves", 'big-integer'], function (expand, bigInt) {
+    var fc_solve_expand_move = expand.fc_solve_expand_move;
+
+    var fc_solve__hll_ms_rand__get_singleton = null;
+    var fc_solve__hll_ms_rand__init = null;
+    alert("trixey");
+    var fc_solve__hll_ms_rand__mod_rand = null;
+    var fc_solve_user__find_deal__alloc = null;
+    var fc_solve_user__find_deal__fill = null;
+    var fc_solve_user__find_deal__free = null;
+    var fc_solve_user__find_deal__run = null;
+    var freecell_solver_user_alloc = null;
+    var freecell_solver_user_solve_board = null;
+    var freecell_solver_user_resume_solution = null;
+    var freecell_solver_user_cmd_line_read_cmd_line_preset = null;
+    var malloc = null;
+    var c_free = null;
+    var freecell_solver_user_get_next_move = null;
+    var freecell_solver_user_get_num_freecells = null;
+    var freecell_solver_user_get_num_stacks = null;
+    var freecell_solver_user_current_state_stringify = null;
+    var freecell_solver_user_stringify_move_ptr = null;
+    var freecell_solver_user_free = null;
+    var freecell_solver_user_limit_iterations_long = null;
+    var freecell_solver_user_get_invalid_state_error_into_string = null;
+    var freecell_solver_user_cmd_line_parse_args_with_file_nesting_count = null;
+    var fc_solve_Pointer_stringify = null;
+    var fc_solve_FS_writeFile = null;
+    var fc_solve_getValue = null;
+    var fc_solve_setValue = null;
+    var fc_solve_intArrayFromString = null;
+    var fc_solve_allocate_i8 = null;
+
+    function FC_Solve_init_wrappers_with_module(Module) {
+        fc_solve__hll_ms_rand__get_singleton = Module.cwrap('fc_solve__hll_ms_rand__get_singleton', 'number', []);
+        alert("mook" + fc_solve__hll_ms_rand__get_singleton);
+        fc_solve__hll_ms_rand__init = Module.cwrap('fc_solve__hll_ms_rand__init', 'number', ['number', 'string']);
+        alert("fook" + fc_solve__hll_ms_rand__init);
+        fc_solve__hll_ms_rand__mod_rand = Module.cwrap('fc_solve__hll_ms_rand__mod_rand', 'number', ['number', 'number']);
+        fc_solve_user__find_deal__alloc = Module.cwrap('fc_solve_user__find_deal__alloc', 'number', []);
+        fc_solve_user__find_deal__fill = Module.cwrap('fc_solve_user__find_deal__fill', 'number', ['number', 'string']);
+        fc_solve_user__find_deal__free = Module.cwrap('fc_solve_user__find_deal__free', 'number', ['number']);
+        fc_solve_user__find_deal__run = Module.cwrap('fc_solve_user__find_deal__run', 'string', ['number', 'string', 'string']);
+        freecell_solver_user_alloc = Module.cwrap('freecell_solver_user_alloc', 'number', []);
+        freecell_solver_user_solve_board = Module.cwrap('freecell_solver_user_solve_board', 'number', ['number', 'string']);
+        freecell_solver_user_resume_solution = Module.cwrap('freecell_solver_user_resume_solution', 'number', ['number']);
+        freecell_solver_user_cmd_line_read_cmd_line_preset = Module.cwrap('freecell_solver_user_cmd_line_read_cmd_line_preset', 'number', ['number', 'string', 'number', 'number', 'number', 'string']);
+        malloc = Module.cwrap('malloc', 'number', ['number']);
+        c_free = Module.cwrap('free', 'number', ['number']);
+        freecell_solver_user_get_next_move = Module.cwrap('freecell_solver_user_get_next_move', 'number', ['number', 'number']);
+        freecell_solver_user_get_num_freecells = Module.cwrap('freecell_solver_user_get_num_freecells', 'number', ['number']);
+        freecell_solver_user_get_num_stacks = Module.cwrap('freecell_solver_user_get_num_stacks', 'number', ['number']);
+        freecell_solver_user_current_state_stringify = Module.cwrap('freecell_solver_user_current_state_stringify', 'number', ['number', 'number', 'number', 'number', 'number']);
+        freecell_solver_user_stringify_move_ptr = Module.cwrap('freecell_solver_user_stringify_move_ptr', 'number', ['number', 'number', 'number', 'number']);
+        freecell_solver_user_free = Module.cwrap('freecell_solver_user_free', 'number', ['number']);
+        freecell_solver_user_limit_iterations_long = Module.cwrap('freecell_solver_user_limit_iterations_long', 'number', ['number', 'number']);
+        freecell_solver_user_get_invalid_state_error_into_string = Module.cwrap('freecell_solver_user_get_invalid_state_error_into_string', 'number', ['number', 'number', 'number']);
+        freecell_solver_user_cmd_line_parse_args_with_file_nesting_count = Module.cwrap('freecell_solver_user_cmd_line_parse_args_with_file_nesting_count', 'number', ['number', 'number', 'number', 'number', 'number', 'number', 'number', 'number', 'number', 'number', 'number']);
+
+        fc_solve_Pointer_stringify = function fc_solve_Pointer_stringify(ptr) {
+            return Module.Pointer_stringify(ptr);
+        };
+        fc_solve_FS_writeFile = function fc_solve_FS_writeFile(p1, p2, p3) {
+            return Module.FS.writeFile(p1, p2, p3);
+        };
+        fc_solve_getValue = function fc_solve_getValue(p1, p2) {
+            return Module.getValue(p1, p2);
+        };
+        fc_solve_setValue = function fc_solve_setValue(p1, p2, p3) {
+            return Module.setValue(p1, p2, p3);
+        };
+        fc_solve_intArrayFromString = function fc_solve_intArrayFromString(s) {
+            return Module.intArrayFromString(s);
+        };
+        fc_solve_allocate_i8 = function fc_solve_allocate_i8(p1) {
+            return Module.allocate(p1, 'i8', Module.ALLOC_STACK);
+        };
+
+        return;
+    }
+
+    function alloc_wrap(size, desc, error) {
+        var ret = malloc(size);
+        if (ret == 0) {
+            alert("Could not allocate " + desc + " (out of memory?)");
+            throw error;
+        }
+        return ret;
+    }
+
+    var remove_trailing_space_re = /[ \t]+$/gm;
+
+    var FCS_STATE_WAS_SOLVED = 0;
+    var FCS_STATE_IS_NOT_SOLVEABLE = 1;
+    var FCS_STATE_ALREADY_EXISTS = 2;
+    var FCS_STATE_EXCEEDS_MAX_NUM_TIMES = 3;
+    var FCS_STATE_BEGIN_SUSPEND_PROCESS = 4;
+    var FCS_STATE_SUSPEND_PROCESS = 5;
+    var FCS_STATE_EXCEEDS_MAX_DEPTH = 6;
+    var FCS_STATE_ORIGINAL_STATE_IS_NOT_SOLVEABLE = 7;
+    var FCS_STATE_INVALID_STATE = 8;
+    var FCS_STATE_NOT_BEGAN_YET = 9;
+    var FCS_STATE_DOES_NOT_EXIST = 10;
+    var FCS_STATE_OPTIMIZED = 11;
+    var FCS_STATE_FLARES_PLAN_ERROR = 12;
+
+    var iters_step = 1000;
+    var upper_iters_limit = 128 * 1024;
+
+    var fc_solve_2uni_suit_map = { 'H': '♥', 'C': '♣', 'D': '♦', 'S': '♠' };
+
+    function fc_solve_2uni_card(match, p1, p2, offset, mystring) {
+        return p1 + fc_solve_2uni_suit_map[p2];
+    }
+
+    function fc_solve_2uni_found(match, p1, p2, offset, mystring) {
+        return fc_solve_2uni_suit_map[p1] + p2;
+    }
+
+    var FC_Solve = function () {
+        function FC_Solve(args) {
+            _classCallCheck(this, FC_Solve);
+
+            var that = this;
+
+            that.dir_base = args.dir_base;
+            that.string_params = args.string_params;
+            that.set_status_callback = args.set_status_callback;
+            that.is_unicode_cards = args.is_unicode_cards || false;
+            that.cmd_line_preset = args.cmd_line_preset;
+            that.current_iters_limit = 0;
+            that.obj = function () {
+                var ret_obj = freecell_solver_user_alloc();
+
+                // TODO : add an option to customise the limit of the
+                // iterations count.
+
+                if (ret_obj == 0) {
+                    alert("Could not allocate solver instance " + "(out of memory?)");
+                    throw "Foo";
+                }
+
+                if (that._initialize_obj(ret_obj) != 0) {
+                    alert("Failed to initialize solver (Bug!)");
+                    freecell_solver_user_free(ret_obj);
+                    throw "Bar";
+                }
+
+                return ret_obj;
+            }();
+            that._proto_states_and_moves_seq = null;
+            that._pre_expand_states_and_moves_seq = null;
+            that._post_expand_states_and_moves_seq = null;
+            that._state_string_buffer = alloc_wrap(500, "state string buffer", "Zam");
+            that._move_string_buffer = alloc_wrap(200, "move string buffer", "Plum");
+
+            return;
+        }
+
+        _createClass(FC_Solve, [{
+            key: 'set_status',
+            value: function set_status(myclass, mylabel) {
+                var that = this;
+
+                return that.set_status_callback(myclass, mylabel);
+            }
+        }, {
+            key: 'handle_err_code',
+            value: function handle_err_code(solve_err_code) {
+                var that = this;
+                if (solve_err_code == FCS_STATE_INVALID_STATE) {
+                    var error_string_ptr = alloc_wrap(300, "state error string", "Gum");
+
+                    freecell_solver_user_get_invalid_state_error_into_string(that.obj, error_string_ptr, 1);
+
+                    var error_string = fc_solve_Pointer_stringify(error_string_ptr);
+                    c_free(error_string_ptr);
+
+                    alert(error_string + "\n");
+
+                    throw "Foo";
+                } else if (solve_err_code == FCS_STATE_SUSPEND_PROCESS) {
+                    if (that.current_iters_limit >= upper_iters_limit) {
+                        that.set_status("exceeded", "Iterations count exceeded at " + that.current_iters_limit);
+                        return;
+                    } else {
+                        // 50 milliseconds.
+                        that.set_status("running", "Running (" + that.current_iters_limit + " iterations)");
+                        return;
+                    }
+                } else if (solve_err_code == FCS_STATE_WAS_SOLVED) {
+                    that.set_status("solved", "Solved");
+
+                    return;
+                } else if (solve_err_code == FCS_STATE_IS_NOT_SOLVEABLE) {
+                    that.set_status("impossible", "Could not solve.");
+
+                    return;
+                } else {
+                    alert("Unknown Error code " + solve_err_code + "!");
+                    throw "Foo";
+                }
+            }
+        }, {
+            key: '_increase_iters_limit',
+            value: function _increase_iters_limit() {
+                var that = this;
+
+                that.current_iters_limit += iters_step;
+                freecell_solver_user_limit_iterations_long(that.obj, that.current_iters_limit);
+
+                return;
+            }
+        }, {
+            key: 'resume_solution',
+            value: function resume_solution() {
+                var that = this;
+
+                that._increase_iters_limit();
+                var solve_err_code = freecell_solver_user_resume_solution(that.obj);
+                that.handle_err_code(solve_err_code);
+                return solve_err_code;
+            }
+            // Ascertain that the string contains a trailing newline.
+            // Without the trailing newline, the parser is sometimes confused.
+
+        }, {
+            key: '_process_board_string',
+            value: function _process_board_string(proto_board_string) {
+                var that = this;
+
+                if (proto_board_string.match(/\n$/)) {
+                    return proto_board_string + "";
+                } else {
+                    return proto_board_string + "\n";
+                }
+            }
+        }, {
+            key: '_stringify_possibly_null_ptr',
+            value: function _stringify_possibly_null_ptr(s_ptr) {
+                var that = this;
+                return s_ptr ? fc_solve_Pointer_stringify(s_ptr) : '';
+            }
+        }, {
+            key: '_initialize_obj',
+            value: function _initialize_obj(obj) {
+                var that = this;
+                var cmd_line_preset = that.cmd_line_preset;
+                try {
+                    if (cmd_line_preset != "default") {
+                        var error_string_ptr_buf = alloc_wrap(128, "error string buffer", "Foo");
+                        var preset_ret = freecell_solver_user_cmd_line_read_cmd_line_preset(obj, cmd_line_preset, 0, error_string_ptr_buf, 0, null);
+
+                        var error_string_ptr = fc_solve_getValue(error_string_ptr_buf, '*');
+
+                        var error_string = that._stringify_possibly_null_ptr(error_string_ptr);
+
+                        c_free(error_string_ptr);
+                        c_free(error_string_ptr_buf);
+
+                        if (preset_ret != 0) {
+                            alert("Failed to load command line preset '" + cmd_line_preset + "'. Problem is: «" + error_string + "». Should not happen.");
+                            throw "Foo";
+                        }
+                    }
+
+                    if (that.string_params) {
+                        var _error_string_ptr_buf = alloc_wrap(128, "error string buffer", "Engo");
+                        // Create a file with the contents of string_params.
+                        // var base_path = '/' + that.dir_base;
+                        var base_path = '/';
+                        var file_basename = 'string-params.fc-solve.txt';
+                        var string_params_file_path = base_path + file_basename;
+                        fc_solve_FS_writeFile(string_params_file_path, that.string_params, {});
+
+                        var args_buf = alloc_wrap(4 * 2, "args buf", "Seed");
+                        // TODO : Is there a memory leak here?
+                        var read_from_file_str_ptr = fc_solve_allocate_i8(fc_solve_intArrayFromString("--read-from-file"));
+                        var arg_str_ptr = fc_solve_allocate_i8(fc_solve_intArrayFromString("0," + string_params_file_path));
+
+                        fc_solve_setValue(args_buf, read_from_file_str_ptr, '*');
+                        fc_solve_setValue(args_buf + 4, arg_str_ptr, '*');
+
+                        var last_arg_ptr = alloc_wrap(4, "last_arg_ptr", "cherry");
+
+                        // Input the file to the solver.
+                        var args_ret_code = freecell_solver_user_cmd_line_parse_args_with_file_nesting_count(obj, 2, args_buf, 0, 0, 0, 0, _error_string_ptr_buf, last_arg_ptr, -1, 0);
+
+                        c_free(last_arg_ptr);
+                        c_free(args_buf);
+
+                        var _error_string_ptr = fc_solve_getValue(_error_string_ptr_buf, '*');
+
+                        var _error_string = that._stringify_possibly_null_ptr(_error_string_ptr);
+                        c_free(_error_string_ptr);
+                        c_free(_error_string_ptr_buf);
+
+                        if (args_ret_code != 0) {
+                            alert("Failed to process user-specified command " + "line arguments. Problem is: «" + _error_string + "».");
+                            throw "Foo";
+                        }
+                    }
+                    return 0;
+                } catch (e) {
+                    that.set_status("error", "Error");
+                    return -1;
+                }
+            }
+        }, {
+            key: 'do_solve',
+            value: function do_solve(proto_board_string) {
+                var that = this;
+
+                that.set_status("running", "Running");
+
+                try {
+                    that._increase_iters_limit();
+                    // Removed; for debugging purposes.
+                    // alert("preset_ret = " + preset_ret);
+
+                    var board_string = that._process_board_string(proto_board_string);
+                    var solve_err_code = freecell_solver_user_solve_board(that.obj, board_string);
+                    that.handle_err_code(solve_err_code);
+                    return solve_err_code;
+                } catch (e) {
+                    that.set_status("error", "Error");
+                    return;
+                }
+            }
+        }, {
+            key: '_replace_card',
+            value: function _replace_card(s) {
+                return s.replace(/\b([A2-9TJQK])([HCDS])\b/g, fc_solve_2uni_card);
+            }
+        }, {
+            key: '_replace_found',
+            value: function _replace_found(s) {
+                return s.replace(/\b([HCDS])(-[0A2-9TJQK])\b/g, fc_solve_2uni_found);
+            }
+        }, {
+            key: 'unicode_preprocess',
+            value: function unicode_preprocess(out_buffer) {
+                var that = this;
+
+                if (!that.is_unicode_cards) {
+                    return out_buffer;
+                }
+
+                return that._replace_found(that._replace_card(out_buffer));
+            }
+        }, {
+            key: '_calc_states_and_moves_seq',
+            value: function _calc_states_and_moves_seq() {
+                var that = this;
+
+                if (that._pre_expand_states_and_moves_seq) {
+                    return;
+                }
+
+                // A sequence to hold the moves and states for post-processing,
+                // such as expanding multi-card moves.
+                var states_and_moves_sequence = [];
+
+                function _out_state(s) {
+                    states_and_moves_sequence.push({ type: 's', str: s });
+                };
+
+                function get_state_str() {
+                    freecell_solver_user_current_state_stringify(that.obj, that._state_string_buffer, 1, 0, 1);
+
+                    return fc_solve_Pointer_stringify(that._state_string_buffer);
+                };
+
+                _out_state(get_state_str());
+
+                var move_ret_code = void 0;
+                // 128 bytes are enough to hold a move.
+                var move_buffer = alloc_wrap(128, "a buffer for the move", "maven");
+                while ((move_ret_code = freecell_solver_user_get_next_move(that.obj, move_buffer)) == 0) {
+                    var state_as_string = get_state_str();
+                    freecell_solver_user_stringify_move_ptr(that.obj, that._move_string_buffer, move_buffer, 0);
+                    var move_as_string = fc_solve_Pointer_stringify(that._move_string_buffer);
+
+                    states_and_moves_sequence.push({
+                        type: 'm',
+                        m: {
+                            type: 'm',
+                            str: move_as_string
+                        },
+                        exp: null,
+                        is_exp: false
+                    });
+                    _out_state(state_as_string);
+                }
+
+                that._proto_states_and_moves_seq = states_and_moves_sequence;
+                that._pre_expand_states_and_moves_seq = states_and_moves_sequence.map(function (item) {
+                    return item.type == 'm' ? item.m : item;
+                });
+                that._post_expand_states_and_moves_seq = null;
+
+                // Cleanup C resources
+                c_free(move_buffer);
+                freecell_solver_user_free(that.obj);
+                that.obj = 0;
+                c_free(that._state_string_buffer);
+                that._state_string_buffer = 0;
+                c_free(that._move_string_buffer);
+                that._move_string_buffer = 0;
+
+                return;
+            }
+        }, {
+            key: '_calc_expanded_move',
+            value: function _calc_expanded_move(idx) {
+                var that = this;
+
+                var states_and_moves_sequence = that._proto_states_and_moves_seq;
+
+                if (!states_and_moves_sequence[idx].exp) {
+                    states_and_moves_sequence[idx].exp = fc_solve_expand_move(8, 4, states_and_moves_sequence[idx - 1].str, states_and_moves_sequence[idx].m, states_and_moves_sequence[idx + 1].str);
+                }
+                return states_and_moves_sequence[idx].exp;
+            }
+        }, {
+            key: '_calc_expanded_seq',
+            value: function _calc_expanded_seq() {
+                var that = this;
+
+                if (that._post_expand_states_and_moves_seq) {
+                    return;
+                }
+
+                that._calc_states_and_moves_seq();
+
+                var states_and_moves_sequence = that._proto_states_and_moves_seq;
+                var new_array = [states_and_moves_sequence[0]];
+                for (var i = 1; i < states_and_moves_sequence.length - 1; i += 2) {
+                    Array.prototype.push.apply(new_array, that._calc_expanded_move(i));
+                    new_array.push(states_and_moves_sequence[i + 1]);
+                }
+
+                that._post_expand_states_and_moves_seq = new_array;
+
+                return;
+            }
+        }, {
+            key: '_display_specific_sol',
+            value: function _display_specific_sol(seq) {
+                var that = this;
+
+                var out_buffer = '';
+
+                function my_append(str) {
+                    out_buffer += str;
+                };
+
+                my_append("-=-=-=-=-=-=-=-=-=-=-=-\n\n");
+
+                seq.forEach(function (x) {
+                    var t_ = x.type;
+                    var str = x.str;
+                    my_append(str + (t_ == 's' ? "\n\n====================\n\n" : "\n\n"));
+                });
+
+                return that.unicode_preprocess(out_buffer.replace(remove_trailing_space_re, ''));
+            }
+        }, {
+            key: 'display_solution',
+            value: function display_solution(args) {
+                var that = this;
+
+                var ret = void 0;
+
+                try {
+                    that._calc_states_and_moves_seq();
+                    that.set_status("solved", "Solved");
+                    ret = that._display_specific_sol(that._pre_expand_states_and_moves_seq);
+                } catch (e) {
+                    return;
+                }
+
+                return ret;
+            }
+        }, {
+            key: 'display_expanded_moves_solution',
+            value: function display_expanded_moves_solution(args) {
+                var that = this;
+
+                that._calc_expanded_seq();
+                that.set_status("solved", "Solved");
+                return that._display_specific_sol(that._post_expand_states_and_moves_seq);
+            }
+        }, {
+            key: 'generic_display_sol',
+            value: function generic_display_sol(args) {
+                var that = this;
+
+                return args.expand ? that.display_expanded_moves_solution(args) : that.display_solution(args);
+            }
+        }, {
+            key: 'get_num_freecells',
+            value: function get_num_freecells() {
+                var that = this;
+
+                return freecell_solver_user_get_num_freecells(that.obj);
+            }
+        }, {
+            key: 'get_num_stacks',
+            value: function get_num_stacks() {
+                var that = this;
+
+                return freecell_solver_user_get_num_stacks(that.obj);
+            }
+        }]);
+
+        return FC_Solve;
+    }();
+    /*
+     * Microsoft C Run-time-Library-compatible Random Number Generator
+     * Copyright by Shlomi Fish, 2011.
+     * Released under the MIT/Expat License
+     * ( http://en.wikipedia.org/wiki/MIT_License ).
+     * */
+
+
+    var MSRand = function () {
+        function MSRand(args) {
+            _classCallCheck(this, MSRand);
+
+            var that = this;
+            that.gamenumber = args.gamenumber;
+            alert("shin");
+            that.rander = fc_solve__hll_ms_rand__get_singleton();
+            alert("spark");
+        alert("fook4" + fc_solve__hll_ms_rand__init);
+            fc_solve__hll_ms_rand__init(that.rander, "" + that.gamenumber);
+            alert("spik");
+            return;
+        }
+
+        _createClass(MSRand, [{
+            key: 'max_rand',
+            value: function max_rand(mymax) {
+                return fc_solve__hll_ms_rand__mod_rand(this.rander, mymax);
+            }
+        }, {
+            key: 'shuffle',
+            value: function shuffle(deck) {
+                if (deck.length) {
+                    var i = deck.length;
+                    while (--i) {
+                        var j = this.max_rand(i + 1);
+                        var tmp = deck[i];
+                        deck[i] = deck[j];
+                        deck[j] = tmp;
+                    }
+                }
+                return deck;
+            }
+        }]);
+
+        return MSRand;
+    }();
+    /*
+     * Microsoft Windows Freecell / Freecell Pro boards generation.
+     *
+     * See:
+     *
+     * - http://rosettacode.org/wiki/Deal_cards_for_FreeCell
+     *
+     * - http://www.solitairelaboratory.com/mshuffle.txt
+     *
+     * Under MIT/Expat Licence.
+     *
+     * */
+
+    function deal_ms_fc_board(seed) {
+        alert("djdj");
+        var randomizer = new MSRand({ gamenumber: seed });
+        var num_cols = 8;
+
+        function _perl_range(start, end) {
+            var ret = [];
+
+            for (var i = start; i <= end; i++) {
+                ret.push(i);
+            }
+
+            return ret;
+        };
+
+        var columns = _perl_range(0, num_cols - 1).map(function () {
+            return [];
+        });
+        var deck = _perl_range(0, 4 * 13 - 1);
+
+        randomizer.shuffle(deck);
+
+        deck = deck.reverse();
+
+        for (var i = 0; i < 52; i++) {
+            columns[i % num_cols].push(deck[i]);
+        }
+
+        function render_card(card) {
+            var suit = card % 4;
+            var rank = Math.floor(card / 4);
+
+            return "A23456789TJQK".charAt(rank) + "CDHS".charAt(suit);
+        }
+
+        function render_column(col) {
+            return ": " + col.map(render_card).join(" ") + "\n";
+        }
+
+        return columns.map(render_column).join("");
+    }
+
+    var Freecell_Deal_Finder = function () {
+        function Freecell_Deal_Finder(args) {
+            _classCallCheck(this, Freecell_Deal_Finder);
+
+            var that = this;
+            that.obj = fc_solve_user__find_deal__alloc();
+        }
+
+        _createClass(Freecell_Deal_Finder, [{
+            key: 'fill',
+            value: function fill(str) {
+                var that = this;
+                fc_solve_user__find_deal__fill(that.obj, str);
+                return;
+            }
+        }, {
+            key: 'release',
+            value: function release() {
+                fc_solve_user__find_deal__free(this.obj);
+                return;
+            }
+        }, {
+            key: 'run',
+            value: function run(abs_start, abs_end_param, update_cb) {
+                var that = this;
+                var CHUNK = bigInt(1000000);
+                that.CHUNKM = CHUNK.add(bigInt.minusOne);
+                var start = bigInt(abs_start);
+                var abs_end = bigInt(abs_end_param);
+                that.abs_end = abs_end;
+                that.start = start;
+                that.update_cb = update_cb;
+
+                return;
+            }
+        }, {
+            key: 'cont',
+            value: function cont() {
+                var that = this;
+                var abs_end = that.abs_end;
+                if (that.start.lesser(abs_end)) {
+                    that.update_cb({ start: that.start });
+                    var end = that.start.add(that.CHUNKM);
+                    if (end.gt(abs_end)) {
+                        end = abs_end;
+                    }
+                    var result = fc_solve_user__find_deal__run(that.obj, that.start.toString(), end.toString());
+                    if (result != "-1") {
+                        return { found: true, result: result };
+                    }
+                    that.start = end.add(bigInt.one);
+                    return { found: false, cont: true };
+                } else {
+                    return { found: false, cont: false };
+                }
+            }
+        }]);
+
+        return Freecell_Deal_Finder;
+    }();
+
+    ;
+
+    return {
+        FC_Solve: FC_Solve,
+        FC_Solve_init_wrappers_with_module: FC_Solve_init_wrappers_with_module,
+        FCS_STATE_SUSPEND_PROCESS: FCS_STATE_SUSPEND_PROCESS,
+        FCS_STATE_WAS_SOLVED: FCS_STATE_WAS_SOLVED,
+        Freecell_Deal_Finder: Freecell_Deal_Finder,
+        deal_ms_fc_board: deal_ms_fc_board
+    };
+});

@@ -23,7 +23,9 @@ define(["web-fc-solve", "libfcs-wrap", 'dist/fc_solve_find_index_s2ints'], funct
     // Thanks to Stefan Petrea ( http://garage-coding.com/ ) for inspiring this
     // feature.
     function populate_input_with_numbered_deal() {
+        alert("vheese");
         var input_s = $('#deal_number').val();
+        alert("blo," + input_s);
         if (!input_s.match(/^[1-9][0-9]*$/)) {
             alert("Wrong input - please enter a positive integer.");
             return;
@@ -31,7 +33,12 @@ define(["web-fc-solve", "libfcs-wrap", 'dist/fc_solve_find_index_s2ints'], funct
 
         var previous_deal_idx = parseInt(input_s);
 
+        alert("rari");
+        try {
         $("#stdin").val("# MS Freecell Deal #" + previous_deal_idx + "\n#\n" + w.deal_ms_fc_board(previous_deal_idx));
+        } catch (e) {
+            alert(e);
+        }
 
         return;
     }
