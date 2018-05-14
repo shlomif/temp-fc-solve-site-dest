@@ -1,0 +1,496 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US">
+<head>
+<title>Online Freecell solver (text based)</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="author" content="Shlomi Fish" />
+<meta name="description" content="Freecell Solver - a Program and a Library written in ANSI C for Solving Games of Freecell and similar Solitaire Variants" />
+<meta name="keywords" content="Freecell, Freecell Solver, solvers, AI, artificial intelligence, solitaire, Simple Simon, Baker's Game, Seahaven Towers, Shlomi Fish, games" />
+<link rel="stylesheet" href="../../style.css" type="text/css" media="screen" title="Normal" />
+<link rel="stylesheet" href="../../print.css" type="text/css" media="print" />
+<link rel="next" href="../../faq.html" title="Frequently Asked Questions List" />
+<link rel="prev" href="../" title="Try Freecell Solver in your browser!" />
+<link rel="top" href="../../" />
+<link rel="up" href="../" title="Try Freecell Solver in your browser!" />
+<script type="text/javascript" src="../../js/common-methods.js"></script>
+<script type="text/javascript" src="../../js/common-hacks.js"></script>
+<script type="text/javascript" src="../../js/jq.js"></script>
+<link rel="alternate" type="application/rss+xml" title="Freecell Solver's Blog RSS Feed" href="http://fc-solve.blogspot.com/feeds/posts/default?alt=rss" />
+<link rel="alternate" type="application/atom+xml" title="Freecell Solver's Blog Atom Feed" href="http://fc-solve.blogspot.com/feeds/posts/default" />
+<!-- Project Wonderful Ad Box Loader -->
+<script type="text/javascript">
+   (function(){function pw_load(){
+      if(arguments.callee.z)return;else arguments.callee.z=true;
+      var d=document;var s=d.createElement('script');
+      var x=d.getElementsByTagName('script')[0];
+      s.type='text/javascript';s.async=true;
+      s.src='//www.projectwonderful.com/pwa.js';
+      x.parentNode.insertBefore(s,x);}
+   if (window.attachEvent){
+    window.attachEvent('DOMContentLoaded',pw_load);
+    window.attachEvent('onload',pw_load);}
+   else{
+    window.addEventListener('DOMContentLoaded',pw_load,false);
+    window.addEventListener('load',pw_load,false);}})();
+</script>
+<!-- End Project Wonderful Ad Box Loader -->
+<script type="text/javascript">
+(function() {
+    try {
+        var a = new Float64Array(1);
+        return; //no need
+    } catch(e) { window.location.replace("../../js-fc-solve/incompatible-browser.html"); }
+})();
+</script>
+<script type="text/javascript" src="../../js/jquery-ui/jquery-ui.min.js"></script>
+<link rel="stylesheet" type="text/css" href="../../js/jquery-ui/jquery-ui.min.css" media="screen, projection" />
+<link rel="stylesheet" type="text/css" href="../../jqui-override.css" media="screen, projection" />
+<script type="text/javascript" src="../../js/jquery.querystring.js"></script>
+<script type="text/javascript" src="../../js/require--debug.js"></script>
+<link rel="stylesheet" type="text/css" href="../../web-fc-solve.css" />
+</head>
+<body>
+<div class="header" id="header">
+</div>
+<div id="faux">
+<div id="container-all">
+<p class="invisible">
+<a href="#main">Go to main content</a>
+</p>
+<div class="navbar" id="navbar">
+<p class="invisible">
+<a href="#nav_menu">Go to the navigation menu</a>
+</p>
+<div class="center">
+<a href="../.."
+    title="Freecell Solver’s Homepage"><img
+    src="../../images/fc-solve-icon.png"
+    alt="fc-solve icon: H C D S"
+    class="icon"
+    style="border:0;margin-bottom:0.5em;"
+      /></a>
+</div>
+<div id="nav_menu">
+<ul class="navbarmain">
+<li>
+<a href="../../">Home</a>
+</li>
+<li>
+<a href="../../download.html">Downloads</a>
+<br />
+<ul class="navbarnested">
+<li>
+<a href="../../don_woods.html">Don Woods' Solver</a>
+</li>
+<li>
+<a href="../../verify-code/" title="Code to Verify the Solutions of Games">Verification</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="../" title="Try Freecell Solver in your browser!">Online (WWW) Demos</a>
+<br />
+<ul class="navbarnested">
+<li>
+<b>Text-Based</b>
+</li>
+</ul>
+</li>
+<li>
+<a href="../../faq.html" title="Frequently Asked Questions List">FAQ</a>
+</li>
+<li>
+<a href="../../docs/">Documents</a>
+<br />
+<ul class="navbarnested">
+<li>
+<a href="../../arch_doc/" title="Architecture Document">Arch Doc</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="../../links.html">Links</a>
+<br />
+<ul class="navbarnested">
+<li>
+<a href="../../links.html#other_solvers">Other Solvers</a>
+</li>
+<li>
+<a href="../../links.html#front_ends">Front Ends</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="../../features.html" title="A List of Freecell Solver Features">Features</a>
+</li>
+<li>
+<a href="../../contribute/" title="Information about contributing to Freecell Solver">Contribute</a>
+<br />
+<ul class="navbarnested">
+<li>
+<a href="../../to-do.html" title="A List of Major Tasks that can be Performed by Interesetd Developers">To Do List</a>
+</li>
+<li>
+<a href="../../code-of-conduct/" title="Code of Conduct and Diversity Statement">Code of Conduct</a>
+</li>
+<li>
+<a href="../../getting-credit.html" title="Getting or Giving Academic Credit for Working on Freecell Solver">Give or Get Academic Credit</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="../../support.html" title="Report bugs, get help, and get other support">Support</a>
+</li>
+</ul>
+<ul class="navbarmain">
+<li>
+<a href="../../articles/">Articles and Reports</a>
+<br />
+<ul class="navbarnested">
+<li>
+<a href="../../articles/how-we-benchmark/v1/">How We Benchmark Freecell Solver</a>
+</li>
+<li>
+<a href="../../charts/fc-pro--4fc-deals-solvability--report/" title="Report: The solvability statistics of the Freecell Pro 4-Freecells Deals">4FC Deals Solvability Statistics</a>
+</li>
+</ul>
+</li>
+</ul>
+<ul class="navbarmain">
+<li>
+<a href="../../old-news/">Old News Items</a>
+</li>
+</ul>
+</div>
+<p><a href="//affiliates.mozilla.org/link/banner/34673" class="bless"><img class="bless" alt="Get Firefox!" title="Get Firefox! A safer, faster, better web-browser." src="../../images/get-firefox.png" /></a></p>
+<p><a href="http://perl-begin.org/" title="The Perl Beginners' Site" class="bless"><img src="../../images/perl-begin.png" alt="The Perl Beginners' Site" class="bless" /></a></p>
+<p><a href="http://validator.w3.org/check/referer" title="Valid XHTML 1.1!" class="bless"><img class="highlight bless" src="../../images/valid-xhtml11.png" alt="Valid XHTML 1.1!" height="31" width="88" /></a></p>
+<p><a href="http://jigsaw.w3.org/css-validator/" title="Valid CSS!" class="bless"><img class="highlight bless" src="../../images/valid-css.png" alt="Valid CSS!" /></a></p>
+<p><a href="http://thewml.org/" title="Website META Language" class="bless"><img src="../../images/logo-wml.png" alt="Website Meta Language" class="bless" width="100" height="50" /></a></p>
+<p><a href="http://web-cpan.shlomifish.org/latemp/" title="Made with Latemp" class="bless"><img src="../../images/latemp-button-rounded.png" alt="Made with Latemp" class="bless" /></a></p>
+<ul>
+<li>
+<p>
+Please consider
+<a href="http://www.shlomifish.org/meta/donate/"><b>donating</b></a>.
+</p>
+</li>
+</ul>
+<br />
+<a href="http://fc-solve.blogspot.com/feeds/posts/default?alt=rss" title="Subscribe to Our News"><img
+    src="../../images/rss.png"
+    alt="RSS Feed"
+    class="bless"
+      /></a>
+<br />
+<br />
+<!-- Project Wonderful Ad Box Code -->
+<div id="pw_adbox_75116_3_0"></div>
+<script type="text/javascript"></script>
+<!-- End Project Wonderful Ad Box Code -->
+</div>
+<div class="main" id="main">
+<h1>Online Freecell solver (text based)</h1>
+<h2 id="about">About</h2>
+<div id="about_sect">
+<p>
+An online solver for
+<a href="http://en.wikipedia.org/wiki/FreeCell">Freecell</a>, a kind of
+card solitaire game, and <a href="#other_games">several related solitaire games</a>. <span class="enable_js">Please enable
+<strong>JavaScript</strong>.</span>
+</p>
+<script type="text/javascript">
+$(function() { $('.enable_js').addClass('ok'); })
+</script>
+<p>
+<a href="#how_to_use"><strong class="instructions_link">Instructions</strong></a>
+</p>
+</div>
+<h2 id="ui">Solver</h2>
+<div class="disabled">
+<div class="emscripten" id="status">Downloading...</div>
+<div class="emscripten">
+<!--
+  <progress value="0" max="100" id="progress"></progress>
+-->
+</div>
+<!--
+<canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()"></canvas>
+-->
+</div>
+<script type="text/javascript">
+requirejs.config({
+    baseUrl: '../../js',
+    });
+require(["../../js/web-fc-solve-ui.js"], function (web_fc_solve_ui) {
+    $(function() {
+        $( "#fc_solve_tabs" ).tabs({
+            activate: function () {
+                web_fc_solve_ui.set_up_handlers();
+                return;
+            },
+            beforeActivate: function( event, ui) {
+                var mynew = ui.newPanel;
+                var old = ui.oldPanel;
+                var common_old = old.find('.fcs_common');
+                var old_text = common_old.find('textarea').val();
+                var common_html = common_old.html();
+                common_old.html('');
+                var common_new = mynew.find('.fcs_common');
+                common_new.html(common_html);
+                common_new.find('textarea').val(old_text);
+                return;
+            }
+        });
+        return;
+    });
+    web_fc_solve_ui.set_up();
+    return;
+});
+</script>
+<div id="fc_solve_tabs" class="fc_solve_tabs">
+<ul>
+<li><a href="#fc_solve_tabs__numbered_deal">Solve a Numbered Deal</a></li>
+<li><a href="#fc_solve_tabs__any_board">Solve any Board</a></li>
+</ul>
+<div id="fc_solve_tabs__numbered_deal" class="tab">
+<p class="first">
+<label for="deal_number">Enter an MS Freecell Deal:</label>
+<input type="text" id="deal_number" size="12" />
+<button id="populate_input" title="Populate Input with a Windows Freecell Numbered Deal">Populate</button><br />
+</p>
+<div class="fcs_common">
+<label for="stdin">Input:</label><br />
+<textarea class="emscripten" id="stdin" cols="30" rows="10"></textarea><br />
+<button id="run_do_solve">Solve!</button>
+<label for="preset">Solving method:</label>
+<select id="preset">
+<option value="cm" selected="selected">“Cookie Monster” (fastest on average)</option>
+<option value="ve">“Video Editing” (short solutions)</option>
+<option value="obf">“One Big Family” (fast on average)</option>
+<option value="default">Default</option>
+</select>
+</div>
+</div>
+<div id="fc_solve_tabs__any_board" class="tab">
+<p class="first">
+Input a Freecell layout in the <a href="../../docs/distro/README.html">fc-solve format</a>:<br />
+</p>
+<div class="fcs_common">
+</div>
+</div>
+</div>
+<p>
+<button id="fcs_advanced_toggle">Advanced ▼</button>
+</p>
+<div id="fcs_advanced" class="disabled">
+<label for="game_type">Game Type:</label><select id="game_type"><option value="bakers_dozen">Baker&#39;s Dozen</option><option value="bakers_game">Baker&#39;s Game</option><option value="beleaguered_castle">Beleaguered Castle</option><option value="citadel">Citadel</option><option value="cruel">Cruel</option><option value="der_katz">Der Katzenschwanz</option><option value="die_schlange">Die Schlange</option><option value="eight_off">Eight Off</option><option value="fan">Fan</option><option value="forecell">Forecell</option><option value="freecell" selected="selected">Freecell (default)</option><option value="good_measure">Good Measure</option><option value="ko_bakers_game">Kings&#39; Only Baker&#39;s Game</option><option value="relaxed_freecell">Relaxed Freecell</option><option value="relaxed_sehaven">Relaxed Seahaven Towers</option><option value="seahaven">Seahaven Towers</option><option value="simple_simon">Simple Simon</option><option value="streets_and_alleys">Streets and Alleys</option></select>
+<br />
+<label for="string_params">String Parameters:</label><br />
+<textarea class="emscripten" id="string_params" cols="50" rows="30"></textarea>
+<p>
+(Format as a preset file, with backslashes at the end of lines. See the
+<a href="../../docs/">online documentation</a> for information regarding syntax.)
+</p>
+</div>
+<p id="status_wrap">
+<strong>Status:</strong> <span id="fc_solve_status" class="not_started">Not started</span> <br />
+</p>
+<label for="output">Output:</label><br />
+<div class="output_form">
+<div id="dynamic_output"></div>
+<textarea class="emscripten" id="output" cols="50" rows="30" readonly="readonly"></textarea>
+<div class="controls">
+<input id="one_based" type="checkbox" title="1-based offset" checked="checked" /><label for="one_based">1-based</label><br />
+<input id="unicode_suits" type="checkbox" title="Unicode suits" checked="checked" /><label for="unicode_suits">Unicode suits</label>
+<button id="clear_output" title="Clear the Output Box">Clear Output</button>
+</div>
+</div>
+<br />
+<div id="fc_solve_bookmark">
+<h3 id="bookmark">Bookmark This Form</h3>
+<p>
+You can use the button below to generate a URL that will
+auto-populate the form. This is also useful for reporting problems.
+</p>
+<div class="controls_wrapper">
+<button id="fc_solve_bookmark_button">Bookmark</button>
+<ul id="fcs_bookmark_wrapper" class="disabled">
+<li>
+<label for="fcs_bm_results_input">URL:</label>
+<input type="text" id="fcs_bm_results_input" size="40" readonly="readonly" />
+</li>
+<li>
+<a id="fcs_bm_results_a" href="#fcs_bookmark_wrapper">Bookmark Link</a>
+</li>
+</ul>
+</div>
+</div>
+<hr />
+<h2 id="how_to_use">How to Use</h2>
+<p>
+Enter a board in <a href="#stdin">the input text area</a> in
+<a href="http://fc-solve.shlomifish.org/docs/distro/README.html">Freecell
+Solver’s input format</a> with each line of input representing a column (or
+stack) of cards. Freecells and foundations can also be specified. Numbered
+layouts (compatible with
+<a href="http://en.wikipedia.org/wiki/FreeCell_%28Windows%29">Microsoft
+Windows FreeCell</a>, FreeCell Pro and compatible
+Freecell implementations) can be input using the
+<a href="#deal_number">deal number feature</a>. Press the <a href="#run_do_solve">“Solve” button</a> to
+run the solver, and assuming it was successful, you will be able to read
+and/or copy the output from <a href="#output">the output box</a>.
+</p>
+<p>
+Enjoy!
+</p>
+<h3 id="other_games">Solving other, similar, games</h3>
+<p>
+Click the <a href="#fcs_advanced_toggle">Advanced button</a> and select the
+game from the drop-down.
+</p>
+<h2 id="technology">Technology</h2>
+<p>
+This is a web-based interface to
+<a href="http://fc-solve.shlomifish.org/">Freecell Solver</a>, that was
+translated from the C source code to JavaScript, by using the
+<a href="https://github.com/kripken/emscripten">emscripten</a> LLVM bit-code
+to JavaScript compiler. Like Freecell Solver itself, this JavaScript port
+is open-source software under the permissive
+<a href="http://en.wikipedia.org/wiki/MIT_License">MIT/Expat licence</a>.
+</p>
+<p>
+Other technologies used for writing this page are:
+</p>
+<ul>
+<li>
+<p>
+<a href="http://jquery.com/">jQuery</a> - the “write less, do more”
+JavaScript library. A convenient JavaScript browser-side library for
+DOM manipulations, UI and much more.
+</p>
+</li>
+<li>
+<p>
+<a href="http://jqueryui.com/">jQuery UI</a> - a library for user-interface
+controls based on jQuery.
+</p>
+</li>
+<li>
+<p>
+<a href="http://code.google.com/p/joose-js/">Joose</a> - an object oriented
+programming system for JavaScript (inspired by
+<a href="http://moose.iinteractive.com/">Perl's Moose</a>). <b>Note:</b>
+it is no longer used here due to not being compatible with Node.js and
+non-browser environments.
+</p>
+</li>
+<li>
+<p>
+<a href="https://github.com/kylefox/jquery-querystring">jquery-querystring</a> -a plugin for jQuery for manipulating query strings.
+</p>
+</li>
+<li>
+<p>
+<a href="https://getfirebug.com/">Firebug</a> - a web development tool for
+Firefox, that provides a JavaScript debugger, a CSS manipulation tool, DOM
+introspection and more. (The Opera web browser's Opera Dragonfly does something
+similar for Opera, and is also useful.)
+</p>
+</li>
+<li>
+<p>
+<a href="http://www.google.com/webfonts">Google Web Fonts</a> - provides an
+attractive font for the button leading to this page.
+</p>
+</li>
+</ul>
+<h2 id="credits">Credits</h2>
+<ul>
+<li>
+<p>
+<a href="https://github.com/kripken">Alon Zakai</a> - writing
+<a href="https://github.com/kripken/emscripten">emscripten</a>, the
+LLVM-to-JavaScript compiler that was used to prepare this page, based
+on the original C (gnu99) source, and answering some bug reports and questions
+I filed about it.
+</p>
+</li>
+<li>
+<p>
+<a href="http://garage-coding.com/">Stefan Petrea</a> - inspired the
+implementation of the populate-with-sample-board button.
+</p>
+</li>
+<li>
+<p>
+<a href="http://en.wikipedia.org/wiki/User:Amire80">Amir Aharoni</a> - tipped
+me regarding integrating <code>@font-face</code> into my CSS.
+</p>
+</li>
+<li>
+<p>
+<a href="mailto:ari.i.becker@gmail.com">Ari Becker</a> - tipped me regarding
+unsolvable deals.
+</p>
+</li>
+</ul>
+<br />
+<br />
+<p class="share">
+<a href="http://www.addtoany.com/share_save?linkurl=(((((chomp_inc='cache/combined///page_url')))))&amp;linkname="><img src="../../images/share_save_171_16.png" width="171" height="16" class="bless" alt="Share/Bookmark" /></a><br />
+</p>
+</div> <div id="container-footer">
+</div>
+</div> </div>
+<div id="footer" class="footer">
+<hr />
+<div class="righty">
+<!-- Creative Commons License -->
+<p>
+Unless noted otherwise, the text and other creative media of the pages of this
+site is <b>licensed</b> under the
+<a rel="license" href="http://creativecommons.org/licenses/by/3.0/">Creative
+Commons Attribution 3.0 Unported License</a> (or at your option any later
+version). The markup and code of this site are, unless noted otherwise, licensed
+under the <a href="http://en.wikipedia.org/wiki/MIT_License">MIT/Expat
+licence</a>.
+</p>
+<!-- /Creative Commons License -->
+<!--
+<rdf:RDF xmlns="http://web.resource.org/cc/"
+    xmlns:dc="http://purl.org/dc/elements/1.1/"
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<Work rdf:about="">
+   <dc:title>Freecell Solver Site</dc:title>
+   <dc:date>2004</dc:date>
+   <dc:description>A website for the the open-source Freecell Solver Project</dc:description>
+   <dc:creator><Agent>
+      <dc:title>Shlomi Fish</dc:title>
+   </Agent></dc:creator>
+   <dc:rights><Agent>
+      <dc:title>Shlomi Fish</dc:title>
+   </Agent></dc:rights>
+   <dc:type rdf:resource="http://purl.org/dc/dcmitype/Text" />
+   <license rdf:resource="http://creativecommons.org/licenses/by/3.0/" />
+</Work>
+<License rdf:about="http://creativecommons.org/licenses/by/3.0/">
+   <permits rdf:resource="http://web.resource.org/cc/Reproduction" />
+   <permits rdf:resource="http://web.resource.org/cc/Distribution" />
+   <requires rdf:resource="http://web.resource.org/cc/Notice" />
+   <requires rdf:resource="http://web.resource.org/cc/Attribution" />
+   <permits rdf:resource="http://web.resource.org/cc/DerivativeWorks" />
+</License>
+</rdf:RDF>
+-->
+</div>
+<div class="foot_left">
+<p>
+<b>Webmaster:</b> <a href="http://www.shlomifish.org/">Shlomi Fish</a> (Email:
+<a href="mailto:shlomif@shlomifish.org">shlomif@shlomifish.org</a>).
+</p>
+</div>
+</div>
+</body>
+</html>

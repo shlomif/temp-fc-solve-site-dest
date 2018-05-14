@@ -1,0 +1,5 @@
+{
+  "globalDependencies": {
+    "qunit": "registry:dt/qunit#2.0.1+20161119044246"
+  }
+}
