@@ -222,11 +222,11 @@ $(function() { $('.enable_js').addClass('ok'); })
 requirejs.config({
     baseUrl: '../../js',
     });
-    require(["../../js/find-fc-deal-ui.js"], function (web_fc_solve_ui) {
+    // require(["../../js/find-fc-deal-ui.js"], function (web_fc_solve_ui) {
     $(function() {
         $( "#fc_solve_tabs" ).tabs({
             activate: function () {
-                web_fc_solve_ui.set_up_handlers();
+                // web_fc_solve_ui.set_up_handlers();
                 return;
             },
             beforeActivate: function( event, ui) {
@@ -244,9 +244,9 @@ requirejs.config({
         });
         return;
     });
-    web_fc_solve_ui.set_up();
-    return;
-});
+    // web_fc_solve_ui.set_up();
+   // return;
+// });
 </script>
 <div id="fc_solve_tabs" class="fc_solve_tabs">
 <ul>
