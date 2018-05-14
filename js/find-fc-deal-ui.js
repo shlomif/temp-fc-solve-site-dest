@@ -1,8 +1,9 @@
 "use strict";
 
-define(["fcs-base-ui", "web-fc-solve", "libfcs-wrap", 'dist/fc_solve_find_index_s2ints'], function (base_ui, w, Module, s2i) {
-    var _my_module = Module()({});
-    w.FC_Solve_init_wrappers_with_module(_my_module);
+// define(["fcs-base-ui", "web-fc-solve", "libfcs-wrap", 'dist/fc_solve_find_index_s2ints'], function (base_ui, w, Module, s2i) {
+define(["fcs-base-ui", "web-fc-solve"], function (base_ui, w/*, Module, s2i*/) {
+    // var _my_module = Module()({});
+    // w.FC_Solve_init_wrappers_with_module(_my_module);
 
     function toggle_advanced() {
         var ctl = $("#fcs_advanced");
@@ -39,7 +40,7 @@ define(["fcs-base-ui", "web-fc-solve", "libfcs-wrap", 'dist/fc_solve_find_index_
 
     function find_deal_ui() {
         var deal_str = $("#stdin").val().replace(/#[^\r\n]*\r?\n?/g, '').replace(/\r+\n/, "\n").replace(/([^\n])$/, "$1\n");
-        var ints = s2i.find_index__board_string_to_ints(deal_str);
+        var ints = [0]; // s2i.find_index__board_string_to_ints(deal_str);
         var ints_s = ints.map(function (i) {
             var ret = i.toString();
             return " ".repeat(10 - ret.length) + ret;
